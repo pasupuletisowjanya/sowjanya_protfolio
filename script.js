@@ -1,15 +1,16 @@
-/*==============================
-  TYPING EFFECT
-==============================*/
+// ===============================
+// Typing Animation
+// ===============================
 
-const typingText = document.getElementById("typing");
+const typingElement = document.getElementById("typing");
 
 const words = [
-    "Software Engineer",
-    "Java Developer",
-    "Python Programmer",
-    "Full Stack Learner",
-    "Problem Solver"
+    "Python Developer",
+    "Web Developer",
+    "CSE Student",
+    "Problem Solver",
+    "Frontend Learner",
+    "Future Software Engineer"
 ];
 
 let wordIndex = 0;
@@ -21,126 +22,117 @@ function typeEffect() {
     const currentWord = words[wordIndex];
 
     if (!deleting) {
+        typingElement.textContent =
+            currentWord.substring(0, charIndex + 1);
 
-        typingText.textContent =
-            currentWord.substring(0, charIndex++);
+        charIndex++;
 
-        if (charIndex > currentWord.length) {
-
+        if (charIndex === currentWord.length) {
             deleting = true;
-
-            setTimeout(typeEffect, 1200);
-
+            setTimeout(typeEffect, 1500);
             return;
-
         }
 
     } else {
 
-        typingText.textContent =
-            currentWord.substring(0, charIndex--);
+        typingElement.textContent =
+            currentWord.substring(0, charIndex - 1);
 
-        if (charIndex < 0) {
+        charIndex--;
 
+        if (charIndex === 0) {
             deleting = false;
-
             wordIndex++;
 
-            if (wordIndex >= words.length)
+            if (wordIndex === words.length) {
                 wordIndex = 0;
-
+            }
         }
-
     }
 
     setTimeout(typeEffect, deleting ? 60 : 120);
-
 }
 
 typeEffect();
 
 
-/*==============================
- DARK MODE
-==============================*/
+// ===============================
+// Dark Mode
+// ===============================
 
-const themeBtn = document.getElementById("theme-btn");
+const themeBtn = document.querySelector(".theme-btn");
 
-let darkMode = true;
+themeBtn.onclick = () => {
 
-themeBtn.addEventListener("click", () => {
+    document.body.classList.toggle("dark-mode");
 
-    if (darkMode) {
+    const icon = themeBtn.querySelector("i");
 
-        document.documentElement.style.setProperty("--dark", "#f5f5f5");
-        document.documentElement.style.setProperty("--text", "#111");
-        document.documentElement.style.setProperty("--card", "#ffffff");
-        document.documentElement.style.setProperty("--gray", "#444");
+    if (document.body.classList.contains("dark-mode")) {
+        icon.classList.remove("fa-moon");
+        icon.classList.add("fa-sun");
 
-        themeBtn.innerHTML =
-            '<i class="fa-solid fa-sun"></i>';
-
-        darkMode = false;
+        localStorage.setItem("theme", "dark");
 
     } else {
 
-        document.documentElement.style.setProperty("--dark", "#0f172a");
-        document.documentElement.style.setProperty("--text", "#f8fafc");
-        document.documentElement.style.setProperty("--card", "#1e293b");
-        document.documentElement.style.setProperty("--gray", "#94a3b8");
+        icon.classList.remove("fa-sun");
+        icon.classList.add("fa-moon");
 
-        themeBtn.innerHTML =
-            '<i class="fa-solid fa-moon"></i>';
-
-        darkMode = true;
-
+        localStorage.setItem("theme", "light");
     }
 
-});
+};
+
+if (localStorage.getItem("theme") === "dark") {
+
+    document.body.classList.add("dark-mode");
+
+    themeBtn.innerHTML = '<i class="fas fa-sun"></i>';
+
+}
 
 
-/*==============================
-SCROLL TO TOP
-==============================*/
+// ===============================
+// Sticky Header
+// ===============================
 
-const topBtn = document.getElementById("topBtn");
+const header = document.querySelector("header");
 
 window.addEventListener("scroll", () => {
 
-    if (window.scrollY > 400) {
-
-        topBtn.style.display = "block";
-
-    } else {
-
-        topBtn.style.display = "none";
-
-    }
-
-});
-
-topBtn.addEventListener("click", () => {
-
-    window.scrollTo({
-
-        top: 0,
-
-        behavior: "smooth"
-
-    });
+    header.classList.toggle("sticky", window.scrollY > 50);
 
 });
 
 
-/*==============================
-ACTIVE NAV LINK
-==============================*/
+// ===============================
+// Scroll Progress Bar
+// ===============================
 
-const sections =
-    document.querySelectorAll("section");
+window.addEventListener("scroll", () => {
 
-const navLinks =
-    document.querySelectorAll("nav ul li a");
+    const scrollTop = document.documentElement.scrollTop;
+
+    const height =
+        document.documentElement.scrollHeight -
+        document.documentElement.clientHeight;
+
+    const progress = (scrollTop / height) * 100;
+
+    document.getElementById("progress-bar").style.width =
+        progress + "%";
+
+});
+
+
+// ===============================
+// Active Navbar
+// ===============================
+
+const sections = document.querySelectorAll("section");
+
+const navLinks = document.querySelectorAll("header nav a");
 
 window.addEventListener("scroll", () => {
 
@@ -148,13 +140,12 @@ window.addEventListener("scroll", () => {
 
     sections.forEach(section => {
 
-        const sectionTop =
-            section.offsetTop - 120;
+        const sectionTop = section.offsetTop - 120;
+
+        const sectionHeight = section.clientHeight;
 
         if (pageYOffset >= sectionTop) {
-
             current = section.getAttribute("id");
-
         }
 
     });
@@ -174,197 +165,9 @@ window.addEventListener("scroll", () => {
 });
 
 
-/*==============================
-NAVBAR BACKGROUND
-==============================*/
-
-const header =
-    document.querySelector("header");
-
-window.addEventListener("scroll", () => {
-
-    if (window.scrollY > 80) {
-
-        header.style.background =
-            "rgba(15,23,42,.98)";
-
-        header.style.boxShadow =
-            "0 8px 25px rgba(0,0,0,.35)";
-
-    }
-
-    else {
-
-        header.style.background =
-            "rgba(15,23,42,.85)";
-
-        header.style.boxShadow =
-            "none";
-
-    }
-
-});
-
-
-/*==============================
-CONTACT FORM
-==============================*/
-
-const form =
-    document.querySelector("form");
-
-form.addEventListener("submit", function (e) {
-
-    e.preventDefault();
-
-    const inputs =
-        form.querySelectorAll("input, textarea");
-
-    let valid = true;
-
-    inputs.forEach(input => {
-
-        if (input.value.trim() === "") {
-
-            valid = false;
-
-            input.style.border =
-                "2px solid red";
-
-        }
-
-        else {
-
-            input.style.border =
-                "2px solid limegreen";
-
-        }
-
-    });
-
-    if (valid) {
-
-        alert("Thank you! Your message has been sent.");
-
-        form.reset();
-
-    }
-
-});
-
-
-/*==============================
-REVEAL ANIMATION
-==============================*/
-
-const revealElements =
-    document.querySelectorAll(
-        ".about, .skills, .education, .projects, .contact"
-    );
-
-function reveal() {
-
-    revealElements.forEach(element => {
-
-        const windowHeight =
-            window.innerHeight;
-
-        const revealTop =
-            element.getBoundingClientRect().top;
-
-        if (revealTop < windowHeight - 120) {
-
-            element.style.opacity = "1";
-
-            element.style.transform =
-                "translateY(0px)";
-
-        }
-
-    });
-
-}
-
-reveal();
-
-window.addEventListener("scroll", reveal);
-
-
-/*==============================
-INITIAL ANIMATION
-==============================*/
-
-revealElements.forEach(element => {
-
-    element.style.opacity = "0";
-
-    element.style.transform =
-        "translateY(80px)";
-
-    element.style.transition =
-        "all .8s ease";
-
-});
-
-
-/*==============================
-SKILL CARD EFFECT
-==============================*/
-
-const cards =
-    document.querySelectorAll(".skill-card");
-
-cards.forEach(card => {
-
-    card.addEventListener("mouseenter", () => {
-
-        card.style.transform =
-            "translateY(-12px) scale(1.05)";
-
-    });
-
-    card.addEventListener("mouseleave", () => {
-
-        card.style.transform =
-            "translateY(0px) scale(1)";
-
-    });
-
-});
-
-
-/*==============================
-PROJECT CARD EFFECT
-==============================*/
-
-const projectCards =
-    document.querySelectorAll(".project-card");
-
-projectCards.forEach(card => {
-
-    card.addEventListener("mouseenter", () => {
-
-        card.style.transform =
-            "translateY(-15px)";
-
-        card.style.transition =
-            ".4s";
-
-    });
-
-    card.addEventListener("mouseleave", () => {
-
-        card.style.transform =
-            "translateY(0px)";
-
-    });
-
-});
-
-
-/*==============================
-SMOOTH SCROLL
-==============================*/
+// ===============================
+// Smooth Scroll
+// ===============================
 
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 
@@ -372,39 +175,129 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 
         e.preventDefault();
 
-        const target =
-            document.querySelector(
-                this.getAttribute("href")
-            );
-
-        if (target) {
-
-            target.scrollIntoView({
+        document.querySelector(this.getAttribute("href"))
+            .scrollIntoView({
 
                 behavior: "smooth"
 
             });
-
-        }
 
     });
 
 });
 
 
-/*==============================
-LOADING ANIMATION
-==============================*/
+// ===============================
+// Reveal Animation
+// ===============================
 
-window.addEventListener("load", () => {
+const reveals = document.querySelectorAll(
+    ".skill-card, .project-card, .timeline-box, .certificate-card"
+);
 
-    document.body.style.opacity = "1";
+function reveal() {
+
+    const windowHeight = window.innerHeight;
+
+    reveals.forEach(item => {
+
+        const revealTop = item.getBoundingClientRect().top;
+
+        if (revealTop < windowHeight - 120) {
+
+            item.classList.add("show");
+
+        }
+
+    });
+
+}
+
+window.addEventListener("scroll", reveal);
+
+reveal();
+
+
+// ===============================
+// Scroll To Top Button
+// ===============================
+
+const topBtn = document.createElement("button");
+
+topBtn.innerHTML = "↑";
+
+topBtn.id = "topBtn";
+
+document.body.appendChild(topBtn);
+
+topBtn.addEventListener("click", () => {
+
+    window.scrollTo({
+
+        top: 0,
+
+        behavior: "smooth"
+
+    });
+
+});
+
+window.addEventListener("scroll", () => {
+
+    if (window.scrollY > 300) {
+
+        topBtn.style.display = "block";
+
+    } else {
+
+        topBtn.style.display = "none";
+
+    }
 
 });
 
 
-/*==============================
-CONSOLE MESSAGE
-==============================*/
+// ===============================
+// Mobile Menu (Optional)
+// ===============================
 
-console.log("Portfolio Loaded Successfully 🚀");
+const menuIcon = document.querySelector("#menu-icon");
+const navbar = document.querySelector("nav");
+
+if (menuIcon) {
+
+    menuIcon.onclick = () => {
+
+        navbar.classList.toggle("active");
+
+    };
+
+}
+
+
+// ===============================
+// Contact Form
+// ===============================
+
+const form = document.querySelector("form");
+
+if (form) {
+
+    form.addEventListener("submit", function (e) {
+
+        e.preventDefault();
+
+        alert("Thank you! Your message has been received.");
+
+        form.reset();
+
+    });
+
+}
+
+
+// ===============================
+// Console Message
+// ===============================
+
+console.log("🚀 Portfolio Loaded Successfully!");
